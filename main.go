@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello World!")
+	fmt.Println("Welcome to Go REST API ..")
 
 	server.Server()
 }

@@ -2,9 +2,12 @@ package userController
 
 import (
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-func GetSingleUser(w http.ResponseWriter, r *http.Request) {
-
-	w.Write([]byte("Get Single User"))
+func GetSingleUser(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "get one",
+	})
 }
