@@ -22,20 +22,22 @@ func InitUserService(userDb *mongo.Collection, ctx context.Context) UserService 
 	}
 }
 
-func (u *UserServiceImpl) CreateUser(user *userModel.User) error {
+func (u *UserServiceImpl) CreateUser(user *userModel.User) (primitive.ObjectID, error) {
 	filterName := bson.D{{Key: "name", Value: user.Name}}
 	filterEmail := bson.D{{Key: "email", Value: user.Email}}
 
 	if err := u.userDb.FindOne(u.ctx, filterName).Decode(&user); err != mongo.ErrNoDocuments {
-		return errors.New("User exist.")
+		return primitive.NilObjectID, errors.New("User exist.")
 	}
 
 	if err := u.userDb.FindOne(u.ctx, filterEmail).Decode(&user); err != mongo.ErrNoDocuments {
-		return errors.New("Email exist.")
+		return primitive.NilObjectID, errors.New("Email exist.")
 	}
 
-	_, err := u.userDb.InsertOne(u.ctx, user)
-	return err
+	res, err := u.userDb.InsertOne(u.ctx, user)
+	oid, _ := res.InsertedID.(primitive.ObjectID)
+
+	return oid, err
 }
 
 func (u *UserServiceImpl) GetSingleUser(id *string) (*userModel.User, error) {

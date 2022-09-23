@@ -1,9 +1,13 @@
 package userService
 
-import userModel "go-rest-api/src/models"
+import (
+	userModel "go-rest-api/src/models"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type UserService interface {
-	CreateUser(*userModel.User) error
+	CreateUser(*userModel.User) (primitive.ObjectID, error)
 	GetSingleUser(*string) (*userModel.User, error)
 	GetAllUser() ([]*userModel.User, error)
 	UpdateUser(*userModel.User) error

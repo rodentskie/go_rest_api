@@ -34,12 +34,13 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	if err := uc.UserService.CreateUser(&user); err != nil {
+	newUser, err := uc.UserService.CreateUser(&user)
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "create"})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "id": &newUser})
 }
 
 func (uc *UserController) GetSingleUser(ctx *gin.Context) {
