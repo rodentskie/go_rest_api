@@ -34,13 +34,13 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	newUser, err := uc.UserService.CreateUser(&user)
+	newUserId, err := uc.UserService.CreateUser(&user)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "id": &newUser})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "id": &newUserId})
 }
 
 func (uc *UserController) GetSingleUser(ctx *gin.Context) {
@@ -63,12 +63,37 @@ func (uc *UserController) GetAllUser(ctx *gin.Context) {
 }
 
 func (uc *UserController) UpdateUser(ctx *gin.Context) {
+	var user userModel.User
+	validate := validator.New()
+
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	if err := validate.Struct(&user); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	var id string = ctx.Param("id")
+
+	err := uc.UserService.UpdateUser(&id, &user)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
 
 	ctx.Writer.WriteHeader(http.StatusNoContent)
 }
 
 func (uc *UserController) DeleteUser(ctx *gin.Context) {
-
+	var id string = ctx.Param("id")
+	err := uc.UserService.DeleteUser(&id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
 	ctx.Writer.WriteHeader(http.StatusNoContent)
 }
 

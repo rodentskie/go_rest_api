@@ -76,10 +76,24 @@ func (u *UserServiceImpl) GetAllUser() ([]*userModel.User, error) {
 	return users, nil
 }
 
-func (u *UserServiceImpl) UpdateUser(user *userModel.User) error {
+func (u *UserServiceImpl) UpdateUser(id *string, user *userModel.User) error {
+	objectId, _ := primitive.ObjectIDFromHex(*id)
+	filter := bson.M{"_id": objectId}
+	update := bson.D{primitive.E{Key: "$set", Value: bson.D{primitive.E{Key: "name", Value: user.Name}, primitive.E{Key: "email", Value: user.Email}, primitive.E{Key: "age", Value: user.Age}, primitive.E{Key: "hobby", Value: user.Hobby}}}}
+
+	result, _ := u.userDb.UpdateOne(u.ctx, filter, update)
+	if result.MatchedCount != 1 {
+		return errors.New("User doesn't exist.")
+	}
 	return nil
 }
 
-func (u *UserServiceImpl) DeleteUser(name *string) error {
+func (u *UserServiceImpl) DeleteUser(id *string) error {
+	objectId, _ := primitive.ObjectIDFromHex(*id)
+	filter := bson.M{"_id": objectId}
+	result, _ := u.userDb.DeleteOne(u.ctx, filter)
+	if result.DeletedCount != 1 {
+		return errors.New("User doesn't exist.")
+	}
 	return nil
 }
