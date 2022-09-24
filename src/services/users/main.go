@@ -7,7 +7,7 @@ import (
 )
 
 type UserService interface {
-	CreateUser(*userModel.User) (primitive.ObjectID, error)
+	CreateUser(*userModel.User) (primitive.ObjectID, string, error)
 	GetSingleUser(*string) (*userModel.User, error)
 	GetAllUser() ([]*userModel.User, error)
 	UpdateUser(*string, *userModel.User) error

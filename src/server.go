@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	userController "go-rest-api/src/controller"
-	env "go-rest-api/src/functions"
+	functions "go-rest-api/src/functions"
 	userService "go-rest-api/src/services/users"
 
 	"log"
@@ -34,8 +34,8 @@ var (
 
 func Server() {
 
-	uri := env.GetEnv("MONGO_URI", "mongodb://localhost:27017")
-	db := env.GetEnv("DB", "go_test")
+	uri := functions.GetEnv("MONGO_URI", "mongodb://localhost:27017")
+	db := functions.GetEnv("DB", "go_test")
 
 	mongoconn := options.Client().ApplyURI(uri)
 	mongoClient, err = mongo.Connect(ctx, mongoconn)

@@ -1,6 +1,8 @@
 package userController
 
 import (
+	"fmt"
+	middlware "go-rest-api/src/middleware"
 	userModel "go-rest-api/src/models"
 	userService "go-rest-api/src/services/users"
 
@@ -34,13 +36,13 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	newUserId, err := uc.UserService.CreateUser(&user)
+	newUserId, token, err := uc.UserService.CreateUser(&user)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "id": &newUserId})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "id": &newUserId, "token": token})
 }
 
 func (uc *UserController) GetSingleUser(ctx *gin.Context) {
@@ -59,6 +61,9 @@ func (uc *UserController) GetAllUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
+
+	fmt.Printf("-----%v\n ", ctx.Request.Header.Get("Request-User-Id")) // user ID from JWT token
+
 	ctx.JSON(http.StatusOK, users)
 }
 
@@ -101,7 +106,7 @@ func (uc *UserController) RegisterUserRoutes(rg *gin.RouterGroup) {
 	userroute := rg.Group("/user")
 	userroute.POST("/", uc.CreateUser)
 	userroute.GET("/:id", uc.GetSingleUser)
-	userroute.GET("/", uc.GetAllUser)
+	userroute.GET("/", middlware.ValidateToken(), uc.GetAllUser)
 	userroute.PATCH("/:id", uc.UpdateUser)
 	userroute.DELETE("/:id", uc.DeleteUser)
 }

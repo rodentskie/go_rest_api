@@ -3,18 +3,30 @@ module go-rest-api
 go 1.18
 
 require (
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/gorilla/mux v1.8.0
 	go.mongodb.org/mongo-driver v1.10.2
 )
 
 require (
+	github.com/0xAX/notificator v0.0.0-20220220101646-ee9b8921e557 // indirect
+	github.com/codegangsta/envy v0.0.0-20141216192214-4b78388c8ce4 // indirect
+	github.com/codegangsta/gin v0.0.0-20211113050330-71f90109db02 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d // indirect
+	github.com/mattn/go-shellwords v1.0.12 // indirect
+	github.com/russross/blackfriday/v2 v2.0.1 // indirect
+	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
+	github.com/urfave/cli v1.22.10 // indirect
+)
+
+require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.8.1 // indirect
+	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
-	github.com/go-playground/validator/v10 v10.11.1 // indirect
+	github.com/go-playground/validator/v10 v10.11.1
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/go-cmp v0.5.5 // indirect

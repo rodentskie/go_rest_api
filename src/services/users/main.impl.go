@@ -3,6 +3,7 @@ package userService
 import (
 	"context"
 	"errors"
+	functions "go-rest-api/src/functions"
 	userModel "go-rest-api/src/models"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,22 +23,24 @@ func InitUserService(userDb *mongo.Collection, ctx context.Context) UserService 
 	}
 }
 
-func (u *UserServiceImpl) CreateUser(user *userModel.User) (primitive.ObjectID, error) {
+func (u *UserServiceImpl) CreateUser(user *userModel.User) (primitive.ObjectID, string, error) {
 	filterName := bson.D{{Key: "name", Value: user.Name}}
 	filterEmail := bson.D{{Key: "email", Value: user.Email}}
 
 	if err := u.userDb.FindOne(u.ctx, filterName).Decode(&user); err != mongo.ErrNoDocuments {
-		return primitive.NilObjectID, errors.New("User exist.")
+		return primitive.NilObjectID, "", errors.New("User exist.")
 	}
 
 	if err := u.userDb.FindOne(u.ctx, filterEmail).Decode(&user); err != mongo.ErrNoDocuments {
-		return primitive.NilObjectID, errors.New("Email exist.")
+		return primitive.NilObjectID, "", errors.New("Email exist.")
 	}
 
 	res, err := u.userDb.InsertOne(u.ctx, user)
 	oid, _ := res.InsertedID.(primitive.ObjectID)
 
-	return oid, err
+	ss, err := functions.GenerateToken(oid.Hex())
+
+	return oid, ss, err
 }
 
 func (u *UserServiceImpl) GetSingleUser(id *string) (*userModel.User, error) {
@@ -52,6 +55,7 @@ func (u *UserServiceImpl) GetSingleUser(id *string) (*userModel.User, error) {
 func (u *UserServiceImpl) GetAllUser() ([]*userModel.User, error) {
 	var users []*userModel.User
 	cur, err := u.userDb.Find(u.ctx, bson.D{{}})
+
 	if err != nil {
 		return nil, err
 	}
